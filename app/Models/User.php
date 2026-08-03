@@ -40,6 +40,7 @@ class User extends Authenticatable
         ];
     }
 
+    // ✅ RELATIONSHIP
     public function role()
     {
         return $this->belongsTo(Role::class, 'role_id');
@@ -53,5 +54,35 @@ class User extends Authenticatable
     public function workOrdersAssigned()
     {
         return $this->hasMany(WorkOrder::class, 'assigned_to');
+    }
+
+    public function workOrdersApproved()
+    {
+        return $this->hasMany(WorkOrder::class, 'approved_by');
+    }
+
+    public function checklistResults()
+    {
+        return $this->hasMany(ChecklistResult::class, 'completed_by');
+    }
+
+    public function measurementResults()
+    {
+        return $this->hasMany(MeasurementResult::class, 'confirmed_by');
+    }
+
+    public function evidences()
+    {
+        return $this->hasMany(Evidence::class, 'uploaded_by');
+    }
+
+    public function ocrResults()
+    {
+        return $this->hasMany(OcrResult::class, 'reviewed_by');
+    }
+
+    public function generatedReports()
+    {
+        return $this->hasMany(Report::class, 'generated_by');
     }
 }

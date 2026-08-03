@@ -54,6 +54,7 @@ class WorkOrder extends Model
         ];
     }
 
+    // ✅ RELATIONSHIP
     public function equipment()
     {
         return $this->belongsTo(Equipment::class, 'equipment_id');
@@ -87,5 +88,30 @@ class WorkOrder extends Model
     public function approvedBy()
     {
         return $this->belongsTo(User::class, 'approved_by');
+    }
+
+    public function checklistResults()
+    {
+        return $this->hasMany(ChecklistResult::class, 'work_order_id');
+    }
+
+    public function measurementResults()
+    {
+        return $this->hasMany(MeasurementResult::class, 'work_order_id');
+    }
+
+    public function evidences()
+    {
+        return $this->hasMany(Evidence::class, 'work_order_id');
+    }
+
+    public function ocrResults()
+    {
+        return $this->hasMany(OcrResult::class, 'work_order_id');
+    }
+
+    public function reports()
+    {
+        return $this->hasMany(Report::class, 'work_order_id');
     }
 }

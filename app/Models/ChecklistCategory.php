@@ -21,6 +21,7 @@ class ChecklistCategory extends Model
 
     public $timestamps = true;
 
+    // ✅ RELATIONSHIP
     public function checklistTemplateItems()
     {
         return $this->hasMany(ChecklistTemplateItem::class, 'checklist_category_id');

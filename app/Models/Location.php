@@ -21,6 +21,7 @@ class Location extends Model
 
     public $timestamps = true;
 
+    // ✅ RELATIONSHIP
     public function parent()
     {
         return $this->belongsTo(Location::class, 'parent_id');

@@ -21,6 +21,7 @@ class MaintenanceFrequency extends Model
 
     public $timestamps = true;
 
+    // ✅ RELATIONSHIP
     public function checklistTemplates()
     {
         return $this->hasMany(ChecklistTemplate::class, 'maintenance_frequency_id');
@@ -29,5 +30,10 @@ class MaintenanceFrequency extends Model
     public function measurementTemplates()
     {
         return $this->hasMany(MeasurementTemplate::class, 'maintenance_frequency_id');
+    }
+
+    public function workOrders()
+    {
+        return $this->hasMany(WorkOrder::class, 'maintenance_frequency_id');
     }
 }

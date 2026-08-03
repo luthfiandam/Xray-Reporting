@@ -37,6 +37,7 @@ class ChecklistTemplateItem extends Model
         ];
     }
 
+    // ✅ RELATIONSHIP
     public function checklistTemplate()
     {
         return $this->belongsTo(ChecklistTemplate::class, 'checklist_template_id');
@@ -45,5 +46,10 @@ class ChecklistTemplateItem extends Model
     public function checklistCategory()
     {
         return $this->belongsTo(ChecklistCategory::class, 'checklist_category_id');
+    }
+
+    public function checklistResults()
+    {
+        return $this->hasMany(ChecklistResult::class, 'checklist_template_item_id');
     }
 }

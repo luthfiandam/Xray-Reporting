@@ -20,6 +20,7 @@ class MaintenanceType extends Model
 
     public $timestamps = true;
 
+    // ✅ RELATIONSHIP
     public function workOrders()
     {
         return $this->hasMany(WorkOrder::class, 'maintenance_type_id');

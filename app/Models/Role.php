@@ -19,6 +19,7 @@ class Role extends Model
 
     public $timestamps = true;
 
+    // ✅ RELATIONSHIP
     public function users()
     {
         return $this->hasMany(User::class, 'role_id');

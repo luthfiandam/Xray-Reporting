@@ -20,6 +20,7 @@ class EquipmentType extends Model
 
     public $timestamps = true;
 
+    // ✅ RELATIONSHIP
     public function equipments()
     {
         return $this->hasMany(Equipment::class, 'equipment_type_id');

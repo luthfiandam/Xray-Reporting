@@ -5,25 +5,22 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-class MeasurementTemplate extends Model
+class ChecklistTemplateItem extends Model
 {
     use HasFactory;
 
-    protected $table = 'measurement_templates';
+    protected $table = 'checklist_template_items';
 
     protected $fillable = [
-        'equipment_type_id',
-        'maintenance_frequency_id',
-        'code',
-        'name',
-        'generator',
-        'unit',
-        'minimum_value',
-        'maximum_value',
-        'decimal_precision',
-        'sequence',
+        'checklist_template_id',
+        'checklist_category_id',
+        'item_code',
+        'item_name',
+        'input_type',
+        'options_json',
         'is_required',
-        'is_ocr_enabled',
+        'sequence',
+        'help_text',
         'is_active',
     ];
 
@@ -32,23 +29,27 @@ class MeasurementTemplate extends Model
     protected function casts(): array
     {
         return [
-            'minimum_value' => 'decimal:6',
-            'maximum_value' => 'decimal:6',
+            'options_json' => 'array',
             'is_required' => 'boolean',
-            'is_ocr_enabled' => 'boolean',
             'is_active' => 'boolean',
             'created_at' => 'datetime',
             'updated_at' => 'datetime',
         ];
     }
 
-    public function equipmentType()
+    // ✅ RELATIONSHIP
+    public function checklistTemplate()
     {
-        return $this->belongsTo(EquipmentType::class, 'equipment_type_id');
+        return $this->belongsTo(ChecklistTemplate::class, 'checklist_template_id');
     }
 
-    public function maintenanceFrequency()
+    public function checklistCategory()
     {
-        return $this->belongsTo(MaintenanceFrequency::class, 'maintenance_frequency_id');
+        return $this->belongsTo(ChecklistCategory::class, 'checklist_category_id');
+    }
+
+    public function checklistResults()
+    {
+        return $this->hasMany(ChecklistResult::class, 'checklist_template_item_id');
     }
 }
