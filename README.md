@@ -13,7 +13,6 @@ v1.0.0 (Development)
 ```
 
 Current Progress
-
 - [x] Requirement Analysis
 - [x] Documentation
 - [x] Database Design
@@ -27,26 +26,22 @@ Current Progress
 # Technology Stack
 
 Backend
-
 - Laravel 12
 - PHP 8.4+
 - MySQL 8
 - Eloquent ORM
 
 Frontend
-
 - Blade
 - Bootstrap 5
 - JavaScript
 - Vite
 
 Storage
-
 - Local Storage
 - Public Storage
 
 Future
-
 - OCR
 - WhatsApp Report
 - PDF Generator
@@ -89,12 +84,12 @@ Status
 - [x] Relationships
 - [x] Authentication
 - [x] Role Middleware
-- [ ] Authorization Policy
-- [ ] Form Request Validation
-- [ ] Service Layer
-- [ ] Helper Functions
-- [ ] Enum
-- [ ] Factory
+- [x] Authorization Policy
+- [x] Form Request Validation
+- [x] Service Layer
+- [x] Helper Functions
+- [x] Enum
+- [x] Factory
 ---
 ## 2.1 Models
 Target
