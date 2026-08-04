@@ -132,3 +132,27 @@ Minta persetujuan.
 AI bukan hanya membuat kode.
 
 AI harus menjaga kualitas arsitektur project.
+
+## Decision Rule
+
+AI wajib mengambil keputusan implementasi yang bersifat teknis apabila keputusan tersebut tidak mengubah business rule atau arsitektur.
+
+AI tidak perlu meminta konfirmasi untuk:
+
+- membuat folder yang belum ada
+- membuat Service yang belum ada
+- membuat Policy yang belum ada
+- membuat Request yang belum ada
+- membuat Blade yang belum ada
+- membuat Controller yang belum ada
+- membuat Test yang belum ada
+- menentukan pagination default dari konfigurasi project
+- menentukan nama file sesuai standar Laravel
+
+AI hanya wajib berhenti apabila:
+
+- terdapat konflik requirement
+- terdapat perubahan database
+- terdapat perubahan business rule
+- terdapat perubahan arsitektur
+- terdapat beberapa alternatif yang berdampak besar terhadap project

@@ -1,0 +1,32 @@
+<?php
+
+namespace App\Http\Middleware;
+
+use Closure;
+use Illuminate\Http\Request;
+use Symfony\Component\HttpFoundation\Response;
+
+class CheckStatus
+{
+    /**
+     * Handle an incoming request.
+     */
+    public function handle(Request $request, Closure $next): Response
+    {
+        // Check if user is authenticated
+        if (!auth()->check()) {
+            return redirect()->route('login');
+        }
+
+        // Check if user is active
+        if (auth()->user()->status !== 'active') {
+            auth()->logout();
+            session()->flush();
+
+            return redirect()->route('login')
+                ->with('error', 'Akun Anda telah dinonaktifkan. Hubungi administrator untuk informasi lebih lanjut.');
+        }
+
+        return $next($request);
+    }
+}
