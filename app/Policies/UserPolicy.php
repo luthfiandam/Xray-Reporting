@@ -6,59 +6,117 @@ use App\Models\User;
 
 class UserPolicy
 {
-    /**
-     * Determine whether the user can view any users.
-     */
-    public function viewAny(User $user): bool
+    public function viewAny(User $authUser): bool
     {
-        return in_array($user->role->name, ['Super Admin']);
+        return in_array($authUser->role->name, ['Super Admin', 'Supervisor']);
     }
 
-    /**
-     * Determine whether the user can view the user.
-     */
-    public function view(User $user, User $model): bool
+    public function view(User $authUser, User $user): bool
     {
-        return in_array($user->role->name, ['Super Admin']) || $user->id === $model->id;
+        if ($authUser->role->name === 'Super Admin') {
+            return true;
+        }
+
+        if ($authUser->role->name === 'Supervisor') {
+            return $user->role->name !== 'Super Admin';
+        }
+
+        return $authUser->id === $user->id;
     }
 
-    /**
-     * Determine whether the user can create users.
-     */
-    public function create(User $user): bool
+    public function create(User $authUser): bool
     {
-        return $user->role->name === 'Super Admin';
+        return $authUser->role->name === 'Super Admin';
     }
 
-    /**
-     * Determine whether the user can update the user.
-     */
-    public function update(User $user, User $model): bool
+    public function update(User $authUser, User $user): bool
     {
-        return $user->role->name === 'Super Admin';
+        if ($authUser->role->name === 'Super Admin') {
+            return true;
+        }
+
+        if ($authUser->id === $user->id) {
+            return true;
+        }
+
+        return false;
     }
 
-    /**
-     * Determine whether the user can delete the user.
-     */
-    public function delete(User $user, User $model): bool
+    public function delete(User $authUser, User $user): bool
     {
-        return $user->role->name === 'Super Admin' && $user->id !== $model->id;
+        if ($authUser->id === $user->id) {
+            return false;
+        }
+
+        return $authUser->role->name === 'Super Admin';
     }
 
-    /**
-     * Determine whether the user can restore the user.
-     */
-    public function restore(User $user, User $model): bool
+    public function deactivate(User $authUser, User $user): bool
     {
-        return $user->role->name === 'Super Admin';
+        if ($authUser->id === $user->id) {
+            return false;
+        }
+
+        if ($authUser->role->name === 'Super Admin') {
+            return true;
+        }
+
+        if ($authUser->role->name === 'Supervisor') {
+            return $user->role->name === 'Teknisi';
+        }
+
+        return false;
     }
 
-    /**
-     * Determine whether the user can permanently delete the user.
-     */
-    public function forceDelete(User $user, User $model): bool
+    public function activate(User $authUser, User $user): bool
     {
-        return $user->role->name === 'Super Admin';
+        if ($authUser->role->name === 'Super Admin') {
+            return true;
+        }
+
+        if ($authUser->role->name === 'Supervisor') {
+            return $user->role->name === 'Teknisi';
+        }
+
+        return false;
+    }
+
+    public function suspend(User $authUser, User $user): bool
+    {
+        if ($authUser->id === $user->id) {
+            return false;
+        }
+
+        if ($authUser->role->name === 'Super Admin') {
+            return true;
+        }
+
+        if ($authUser->role->name === 'Supervisor') {
+            return $user->role->name === 'Teknisi';
+        }
+
+        return false;
+    }
+
+    public function resetPassword(User $authUser, User $user): bool
+    {
+        if ($authUser->id === $user->id) {
+            return false;
+        }
+
+        if ($authUser->role->name === 'Super Admin') {
+            return true;
+        }
+
+        if ($authUser->role->name === 'Supervisor') {
+            return $user->role->name === 'Teknisi';
+        }
+
+        return false;
+    }
+
+    public function changeRole(User $authUser, User $user): bool
+    {
+        return $authUser->role->name === 'Super Admin';
     }
 }

@@ -7,47 +7,68 @@ use Illuminate\Validation\Rule;
 
 class UpdateUserRequest extends FormRequest
 {
-    /**
-     * Determine if the user is authorized to make this request.
-     */
     public function authorize(): bool
     {
-        return auth()->check() && auth()->user()->role->name === 'Super Admin';
+        $user = $this->route('user');
+        return $this->user() && $this->user()->can('update', $user);
     }
 
-    /**
-     * Get the validation rules that apply to the request.
-     */
     public function rules(): array
     {
-        $user = $this->route('user');
+        $userId = $this->route('user')->id;
+        $isSuperAdmin = $this->user()->role->name === 'Super Admin';
 
         return [
-            'role_id' => ['required', 'exists:roles,id'],
-            'name' => ['required', 'string', 'max:100'],
-            'username' => ['required', 'string', 'max:50', Rule::unique('users')->ignore($user->id)],
-            'email' => ['required', 'email', Rule::unique('users')->ignore($user->id)],
-            'phone' => ['nullable', 'string', 'max:20'],
+            'name' => ['required', 'string', 'max:150'],
+            'username' => ['required', 'string', 'max:80', Rule::unique('users')->ignore($userId)],
+            'email' => ['required', 'email', 'max:150', Rule::unique('users')->ignore($userId)],
+            'phone' => ['nullable', 'string', 'max:32'],
             'password' => ['nullable', 'string', 'min:8', 'confirmed'],
-            'technician_code' => ['nullable', 'string', 'max:20', Rule::unique('users')->ignore($user->id)],
-            'status' => ['required', Rule::in(['active', 'inactive'])],
+            'password_confirmation' => ['nullable', 'string'],
+            'role_id' => [$isSuperAdmin ? 'required' : 'nullable', 'integer', 'exists:roles,id'],
+            'technician_code' => ['nullable', 'string', 'max:50', Rule::unique('users')->ignore($userId)],
+            'status' => [$isSuperAdmin ? 'sometimes' : 'nullable', 'in:active,inactive,suspended'],
         ];
     }
 
-    /**
-     * Get custom messages for validation errors.
-     */
     public function messages(): array
     {
         return [
-            'role_id.required' => 'Role harus dipilih',
-            'name.required' => 'Nama pengguna harus diisi',
-            'username.required' => 'Username harus diisi',
-            'username.unique' => 'Username sudah terdaftar',
-            'email.required' => 'Email harus diisi',
-            'email.unique' => 'Email sudah terdaftar',
+            'name.required' => 'Nama lengkap wajib diisi',
+            'name.max' => 'Nama maksimal 150 karakter',
+            'username.required' => 'Username wajib diisi',
+            'username.unique' => 'Username sudah terdaftar di sistem',
+            'username.max' => 'Username maksimal 80 karakter',
+            'email.required' => 'Email wajib diisi',
+            'email.email' => 'Format email tidak valid',
+            'email.unique' => 'Email sudah terdaftar di sistem',
+            'email.max' => 'Email maksimal 150 karakter',
+            'phone.max' => 'Nomor telepon maksimal 32 karakter',
             'password.min' => 'Password minimal 8 karakter',
             'password.confirmed' => 'Konfirmasi password tidak sesuai',
+            'role_id.required' => 'Role wajib dipilih',
+            'role_id.exists' => 'Role tidak valid',
+            'technician_code.unique' => 'Kode teknisi sudah terdaftar',
+            'technician_code.max' => 'Kode teknisi maksimal 50 karakter',
+            'status.in' => 'Status tidak valid',
         ];
+    }
+
+    protected function prepareForValidation(): void
+    {
+        $this->merge([
+            'username' => strtolower(trim($this->username ?? '')),
+            'email' => strtolower(trim($this->email ?? '')),
+        ]);
+
+        if ($this->user()->role->name !== 'Super Admin') {
+            $this->offsetUnset('role_id');
+            $this->offsetUnset('status');
+        }
+
+        if (empty($this->password)) {
+            $this->offsetUnset('password');
+            $this->offsetUnset('password_confirmation');
+        }
     }
 }
